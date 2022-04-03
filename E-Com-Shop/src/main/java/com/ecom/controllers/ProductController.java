@@ -23,11 +23,14 @@ public class ProductController {
 
     @Autowired
     ProductService service;
+
     @Autowired
     ProductRepository productRepository;
 
     @Autowired
     UserRepository userRepository;
+
+
 
     @ApiOperation(value = "search the products")
     @Tag(name="search the products",description = "This api is accessible by any user without creating its profile. " +
@@ -36,8 +39,7 @@ public class ProductController {
     @ApiResponses( value={
             @ApiResponse(responseCode ="200", description = "products are found"),
             @ApiResponse(responseCode ="404", description = "products are not found")
-    }
-    )
+    })
     @GetMapping("/search")
     public ResponseEntity getProducts(@RequestParam(required = false,defaultValue ="") String value,@RequestParam(required = false,defaultValue ="0") int min,@RequestParam(required = false,defaultValue ="0") int max)
     {
@@ -52,6 +54,7 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
 
     }
+
 
 
     @ApiOperation(value = "add the products")
@@ -73,14 +76,15 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
+
+
     @ApiOperation(value = "view products")
     @Tag(name="view products",description = "This api is accessible only by registered user.This api will give list of all products added by the logged in user")
     @ApiResponses( value={
             @ApiResponse(responseCode ="200", description = "products are found"),
             @ApiResponse(responseCode ="404", description = "products are not found"),
             @ApiResponse(responseCode ="401", description = "unauthorized access")
-    }
-    )
+    })
     @GetMapping("/seller/view-products")
     public ResponseEntity viewProducts()
    {
@@ -93,14 +97,15 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+
+
     @ApiOperation(value = "update the products")
     @Tag(name="update the products",description = "This api is accessible only by registered user.Pass updated information of product with the product id .It will update product if that product is added by the logged in user.")
     @ApiResponses( value={
             @ApiResponse(responseCode ="202", description = "products updated"),
             @ApiResponse(responseCode ="404", description = "products are not found"),
             @ApiResponse(responseCode ="401", description = "unauthorized access")
-    }
-    )
+    })
     @PutMapping("/seller/update-product")
     public ResponseEntity updateProduct(@RequestBody Products newproducts)
     {
@@ -120,14 +125,15 @@ public class ProductController {
         return new ResponseEntity<>(newproducts, HttpStatus.ACCEPTED);
     }
 
+
+
     @ApiOperation(value = "delete the products")
     @Tag(name="delete the products",description = "This api is accessible only by registered user.Pass the id of the product through parameter.It will delete product if that product is added by the logged in user.")
     @ApiResponses( value={
             @ApiResponse(responseCode ="201", description = "product deleted"),
             @ApiResponse(responseCode ="404", description = "product not found"),
             @ApiResponse(responseCode ="401", description = "unauthorized access")
-    }
-    )
+    })
     @DeleteMapping("/seller/delete-product")
     public ResponseEntity deleteProduct(@RequestParam int id)
     {
