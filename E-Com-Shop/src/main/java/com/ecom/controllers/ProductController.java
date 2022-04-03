@@ -33,42 +33,41 @@ public class ProductController {
 
     @ApiOperation(value = "search the products")
     @Tag(name="search the products",description = "This api is accessible by any user without creating its profile. " +
-            "User can set value to any field or all fields to search products. Fields are name, type, category, minprice and maxprice. " +
+            "User can pass name, type, category as value parameter and price as min,max parameter  to search products " +
             "It will give list of products or empty list if no product found for matching criteria. If no field is set it will return all products")
+    @ApiResponses( value={
+            @ApiResponse(responseCode ="200", description = "products are found"),
+            @ApiResponse(responseCode ="404", description = "products are not found")
+    }
+    )
     @GetMapping("/search")
-    public List<Products> getProducts(@RequestBody ProductSearch data)
+    public ResponseEntity getProducts(@RequestParam String value,@RequestParam(required = false,defaultValue ="0") int min,@RequestParam(required = false,defaultValue ="0") int max)
     {
         List<Products> products=new ArrayList<>();
 
+        products.addAll(productRepository.findByName(value.toLowerCase()));
+        products.addAll(productRepository.findByType(value.toLowerCase()));
+        products.addAll(productRepository.findByCategory(value. toLowerCase()));
 
-        if(!data.getName().equals(""))
-        products.addAll(productRepository.findByName(data.getName().toLowerCase()));
+        if(min!=0 && max!=0)
+            products.addAll(productRepository.findByMinMaxPrice(min, max));
 
-        if(!data.getType().equals(""))
-        products.addAll(productRepository.findByType(data.getType().toLowerCase()));
+         else if(min!=0)
+        products.addAll(productRepository.findByMinPrice(min));
 
-        if(!data.getCategory().equals(""))
-        products.addAll(productRepository.findByCategory(data.getCategory().toLowerCase()));
+        else if(max!=0)
+        products.addAll(productRepository.findByMaxPrice(max));
 
-        if(data.getMinPrice()!=0 && data.getMaxPrice()!=0)
-            products.addAll(productRepository.findByMinMaxPrice(data.getMinPrice(), data.getMaxPrice()));
+        if(products.isEmpty())
+            return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
 
-         else if(data.getMinPrice()!=0)
-        products.addAll(productRepository.findByMinPrice(data.getMinPrice()));
+        return new ResponseEntity<>(products, HttpStatus.OK);
 
-        else if(data.getMaxPrice()!=0)
-        products.addAll(productRepository.findByMaxPrice(data.getMaxPrice()));
-
-        if(products.size()==0)
-            products.addAll(productRepository.findAll());
-
-
-        return products;
     }
 
 
     @ApiOperation(value = "add the products")
-    @Tag(name="add the products",description = "This api is accessible only by registered user. Registered user has a seller.This api will add products for the user.")
+    @Tag(name="add the products",description = "This api is accessible only by registered user. Registered user has a seller authority.This api will add products for the user.")
     @ApiResponses( value={
             @ApiResponse(responseCode ="201", description = "product is created"),
             @ApiResponse(responseCode ="400", description = "product not created"),
@@ -93,28 +92,45 @@ public class ProductController {
         Products product=productRepository.save(products);
 
         if(product==null)
-            new ResponseEntity<>(product, HttpStatus.BAD_REQUEST);
+         return   new ResponseEntity<>(product, HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "view products")
     @Tag(name="view products",description = "This api is accessible only by registered user.This api will give list of all products added by the logged in user")
+    @ApiResponses( value={
+            @ApiResponse(responseCode ="200", description = "products are found"),
+            @ApiResponse(responseCode ="404", description = "products are not found"),
+            @ApiResponse(responseCode ="401", description = "unauthorized access")
+    }
+    )
     @GetMapping("/seller/view-products")
-    public List<Products> viewProducts()
+    public ResponseEntity viewProducts()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username=auth.getName();
 
         User user= userRepository.findByEmail(username);
 
-        return productRepository.findByUser(user.getId());
+        List<Products> products = productRepository.findByUser(user.getId());
+
+        if(products.isEmpty())
+            return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @ApiOperation(value = "update the products")
     @Tag(name="update the products",description = "This api is accessible only by registered user.Pass updated information of product with the product id .It will update product if that product is added by the logged in user and return true otherwise return false.")
+    @ApiResponses( value={
+            @ApiResponse(responseCode ="202", description = "products updated"),
+            @ApiResponse(responseCode ="404", description = "products are not found"),
+            @ApiResponse(responseCode ="401", description = "unauthorized access")
+    }
+    )
     @PutMapping("/seller/update-product")
-    public boolean updateProduct(@RequestBody Products newproducts)
+    public ResponseEntity updateProduct(@RequestBody Products newproducts)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username=auth.getName();
@@ -132,19 +148,23 @@ public class ProductController {
           newproducts.setSpecifications(newproducts.getSpecifications().toLowerCase());
           Products updateproduct = productRepository.save(newproducts);
 
-          if (updateproduct == null)
-              return false;
       }
       else
-         return false;
+        return  new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
 
-        return true;
+        return new ResponseEntity<>(newproducts, HttpStatus.ACCEPTED);
     }
 
     @ApiOperation(value = "delete the products")
     @Tag(name="delete the products",description = "This api is accessible only by registered user.Pass the id of the product through parameter.It will delete product if that product is added by the logged in user and return true otherwise return false.")
+    @ApiResponses( value={
+            @ApiResponse(responseCode ="201", description = "product deleted"),
+            @ApiResponse(responseCode ="404", description = "product not found"),
+            @ApiResponse(responseCode ="401", description = "unauthorized access")
+    }
+    )
     @DeleteMapping("/seller/delete-product")
-    public boolean deleteProduct(@RequestParam int id)
+    public ResponseEntity deleteProduct(@RequestParam int id)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username=auth.getName();
@@ -157,11 +177,9 @@ public class ProductController {
              productRepository.deleteByUserAndProduct(user.getId(),id);
         }
         else
-        {
-            return false;
-        }
+           return new ResponseEntity<>(product, HttpStatus.NOT_FOUND);
 
-        return true;
+        return new ResponseEntity<>(product, HttpStatus.ACCEPTED);
     }
 
 }
