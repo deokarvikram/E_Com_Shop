@@ -57,7 +57,7 @@ class ProductControllerTest {
         products.setDescription("good");
         products.setCategory("Electronics");
         products.setPrice(24000);
-       // products.setUser(1);
+
 
         when(service.addProduct(any(Products.class))).thenReturn(products);
 
@@ -73,4 +73,6 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("Electronics"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(24000));
     }
+
+
 }
