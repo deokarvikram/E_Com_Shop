@@ -4,6 +4,7 @@ import com.ecom.models.Products;
 import com.ecom.models.User;
 import com.ecom.repository.ProductRepository;
 import com.ecom.repository.UserRepository;
+import com.ecom.service.ProductService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,6 +21,8 @@ import java.util.*;
 @RestController
 public class ProductController {
 
+    @Autowired
+    ProductService service;
     @Autowired
     ProductRepository productRepository;
 
@@ -41,32 +44,7 @@ public class ProductController {
 
         Set<Products> products=new HashSet<>();
 
-        //return all products if paramater is set
-        if(value.trim().equals("") && min==0 && max==0)
-        {
-            products.addAll(productRepository.findAll());
-        }
-
-        //search by name,type and category
-        if(!value.trim().equals(""))
-        {
-
-            products.addAll(productRepository.findByName(value.toLowerCase()));
-        products.addAll(productRepository.findByType(value.toLowerCase()));
-        products.addAll(productRepository.findByCategory(value. toLowerCase()));}
-
-
-        //search by price
-        if(min!=0 && max!=0)
-            products.addAll(productRepository.findByMinMaxPrice(min, max));
-
-        else if(min!=0)
-            products.addAll(productRepository.findByMinPrice(min));
-
-        else if(max!=0)
-            products.addAll(productRepository.findByMaxPrice(max));
-        //search by price
-
+        products = service.getProducts(value, min, max);
 
         if(products.isEmpty())
             return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
@@ -87,19 +65,7 @@ public class ProductController {
     @PostMapping("/seller/add-product")
     public ResponseEntity addProduct(@RequestBody Products products)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username=auth.getName();
-
-        User user= userRepository.findByEmail(username);
-        products.setUser(user);
-
-        products.setCategory(products.getCategory().toLowerCase());
-        products.setDescription(products.getDescription().toLowerCase());
-        products.setName(products.getName().toLowerCase());
-        products.setType(products.getType().toLowerCase());
-        products.setSpecifications(products.getSpecifications().toLowerCase());
-
-        Products product=productRepository.save(products);
+        Products product=service.addProduct(products);
 
         if(product==null)
          return   new ResponseEntity<>(product, HttpStatus.BAD_REQUEST);
@@ -117,13 +83,9 @@ public class ProductController {
     )
     @GetMapping("/seller/view-products")
     public ResponseEntity viewProducts()
-    {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username=auth.getName();
+   {
 
-        User user= userRepository.findByEmail(username);
-
-        List<Products> products = productRepository.findByUser(user.getId());
+    List<Products> products = service.viewProducts();
 
         if(products.isEmpty())
             return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
@@ -146,19 +108,11 @@ public class ProductController {
         String username=auth.getName();
 
         User user= userRepository.findByEmail(username);
-
         //check if the product belongs to the user or not. If not, return not found status from else block
       Products products= productRepository.findByUserAndProduct(user.getId(),newproducts.getId());
 
       if(products!=null) {
-          newproducts.setUser(user);
-          newproducts.setCategory(newproducts.getCategory().toLowerCase());
-          newproducts.setDescription(newproducts.getDescription().toLowerCase());
-          newproducts.setName(newproducts.getName().toLowerCase());
-          newproducts.setType(newproducts.getType().toLowerCase());
-          newproducts.setSpecifications(newproducts.getSpecifications().toLowerCase());
-          Products updateproduct = productRepository.save(newproducts);
-
+          Products updateproduct = service.addProduct(newproducts);
       }
       else
         return  new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
