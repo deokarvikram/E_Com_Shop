@@ -19,8 +19,6 @@ import static springfox.documentation.builders.PathSelectors.regex;
 public class SwaggerUI {
     @Bean
     public Docket productApi() {
-//        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).pathMapping("/").select()
-//                .paths(regex("/user.*")).build();
         return new Docket(DocumentationType.SWAGGER_2);
 
     }
