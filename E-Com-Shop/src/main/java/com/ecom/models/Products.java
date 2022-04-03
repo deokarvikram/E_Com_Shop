@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Products {
+public class Products implements Comparable<Products> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -34,4 +34,24 @@ public class Products {
     @ManyToOne
     @JsonIgnore
     private User user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Products product = (Products) o;
+        return  product.id==this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
+    @Override
+    public int compareTo(Products product) {
+        return product.id;
+    }
 }

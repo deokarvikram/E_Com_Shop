@@ -17,10 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @RestController
 public class ProductController {
@@ -43,7 +40,22 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity getProducts(@RequestParam String value,@RequestParam(required = false,defaultValue ="0") int min,@RequestParam(required = false,defaultValue ="0") int max)
     {
-        List<Products> products=new ArrayList<>();
+//        List<Products> products=new ArrayList<>();
+//
+//        products.addAll(productRepository.findByName(value.toLowerCase()));
+//        products.addAll(productRepository.findByType(value.toLowerCase()));
+//        products.addAll(productRepository.findByCategory(value. toLowerCase()));
+//
+//        if(min!=0 && max!=0)
+//            products.addAll(productRepository.findByMinMaxPrice(min, max));
+//
+//         else if(min!=0)
+//        products.addAll(productRepository.findByMinPrice(min));
+//
+//        else if(max!=0)
+//        products.addAll(productRepository.findByMaxPrice(max));
+
+        Set<Products> products=new HashSet<>();
 
         products.addAll(productRepository.findByName(value.toLowerCase()));
         products.addAll(productRepository.findByType(value.toLowerCase()));
@@ -52,11 +64,11 @@ public class ProductController {
         if(min!=0 && max!=0)
             products.addAll(productRepository.findByMinMaxPrice(min, max));
 
-         else if(min!=0)
-        products.addAll(productRepository.findByMinPrice(min));
+        else if(min!=0)
+            products.addAll(productRepository.findByMinPrice(min));
 
         else if(max!=0)
-        products.addAll(productRepository.findByMaxPrice(max));
+            products.addAll(productRepository.findByMaxPrice(max));
 
         if(products.isEmpty())
             return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);

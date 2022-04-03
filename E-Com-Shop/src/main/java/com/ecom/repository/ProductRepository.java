@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface ProductRepository extends JpaRepository<Products,Integer> {
 
@@ -24,22 +25,22 @@ public interface ProductRepository extends JpaRepository<Products,Integer> {
     public void deleteByUserAndProduct(int uid,int pid);
 
     @Query(value = "select * from Products p where lower(p.name) like %:name%" , nativeQuery = true)
-    public List<Products> findByName(String name);
+    public Set<Products> findByName(String name);
 
     @Query(value = "select * from Products p where p.type like %:type%" , nativeQuery = true)
-    public List<Products> findByType(String type);
+    public Set<Products> findByType(String type);
 
     @Query(value = "select * from Products p where p.category like %:category%" , nativeQuery = true)
-    public List<Products> findByCategory(String category);
+    public Set<Products> findByCategory(String category);
 
     @Query(value = "select * from Products p where p.price>=:price" , nativeQuery = true)
-    public List<Products> findByMinPrice(@Param("price") int price);
+    public Set<Products> findByMinPrice(@Param("price") int price);
 
     @Query(value = "select * from Products p where p.price<=:price", nativeQuery = true)
-    public List<Products> findByMaxPrice(@Param("price") int price);
+    public Set<Products> findByMaxPrice(@Param("price") int price);
 
     @Query(value = "select * from Products p where p.price between :min  and :max", nativeQuery = true)
-    public List<Products> findByMinMaxPrice(@Param("min") int min,@Param("max") int max);
+    public Set<Products> findByMinMaxPrice(@Param("min") int min,@Param("max") int max);
 
 
 }
