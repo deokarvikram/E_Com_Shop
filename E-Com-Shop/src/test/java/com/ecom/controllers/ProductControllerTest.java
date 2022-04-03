@@ -24,9 +24,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
@@ -70,13 +72,13 @@ class ProductControllerTest {
                         .content(new ObjectMapper().writeValueAsString(products))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Dell dis"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.specifications").value("ram 4gb"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("Laptop"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("good"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("Electronics"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(24000));
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Dell dis"))
+                .andExpect(jsonPath("$.specifications").value("ram 4gb"))
+                .andExpect(jsonPath("$.type").value("Laptop"))
+                .andExpect(jsonPath("$.description").value("good"))
+                .andExpect(jsonPath("$.category").value("Electronics"))
+                .andExpect(jsonPath("$.price").value(24000));
     }
 
     @Test
@@ -84,26 +86,35 @@ class ProductControllerTest {
     public void searchProduct() throws Exception {
         Products products=new Products();
         products.setId(1);
-        products.setName("Dell dis");
+        products.setName("Dell 420");
         products.setSpecifications("ram 4gb");
         products.setType("Laptop");
-        products.setDescription("good");
+        products.setDescription("good for coding");
         products.setCategory("Electronics");
-        products.setPrice(24000);
+        products.setPrice(25000);
+
+        Products products1=new Products();
+        products1.setId(2);
+        products1.setName("Study table");
+        products1.setSpecifications("wooden table");
+        products1.setType("table");
+        products1.setDescription("good for study");
+        products1.setCategory("furniture");
+        products1.setPrice(1500);
 
         Set<Products> set=new HashSet<>();
         set.add(products);
-
+        set.add(products1);
         when(service.getProducts(anyString(),anyInt(),anyInt())).thenReturn(set);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/search?min=10000"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Dell dis"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].specifications").value("ram 4gb"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].type").value("Laptop"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value("good"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].category").value("Electronics"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(24000));
+        mockMvc.perform(MockMvcRequestBuilders.get("/search?min=10000&value=table"))
+        .andExpect(jsonPath("$[*].id").exists())
+                .andExpect(jsonPath("$[*].name",containsInAnyOrder("Dell 420","Study table")))
+                .andExpect(jsonPath("$[*].specifications",containsInAnyOrder("ram 4gb","wooden table")))
+                .andExpect(jsonPath("$[*].type",containsInAnyOrder("Laptop","table")))
+                .andExpect(jsonPath("$[*].description",containsInAnyOrder("good for coding","good for study")))
+                .andExpect(jsonPath("$[*].category",containsInAnyOrder("Electronics","furniture")))
+                .andExpect(jsonPath("$[*].price",containsInAnyOrder(25000.0,1500.0)));
     }
 
 }
