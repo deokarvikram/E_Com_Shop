@@ -68,7 +68,7 @@ public class ProductController {
         Products product=service.addProduct(products);
 
         if(product==null)
-         return   new ResponseEntity<>(product, HttpStatus.BAD_REQUEST);
+         return   new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
@@ -88,7 +88,7 @@ public class ProductController {
     List<Products> products = service.viewProducts();
 
         if(products.isEmpty())
-            return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("no products added", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
