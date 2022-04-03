@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Products implements Comparable<Products> {
+public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -50,8 +50,4 @@ public class Products implements Comparable<Products> {
         return this.id;
     }
 
-    @Override
-    public int compareTo(Products product) {
-        return product.id;
-    }
 }

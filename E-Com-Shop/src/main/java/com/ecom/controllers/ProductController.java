@@ -38,28 +38,19 @@ public class ProductController {
     }
     )
     @GetMapping("/search")
-    public ResponseEntity getProducts(@RequestParam String value,@RequestParam(required = false,defaultValue ="0") int min,@RequestParam(required = false,defaultValue ="0") int max)
+    public ResponseEntity getProducts(@RequestParam(required = false,defaultValue ="") String value,@RequestParam(required = false,defaultValue ="0") int min,@RequestParam(required = false,defaultValue ="0") int max)
     {
-//        List<Products> products=new ArrayList<>();
-//
-//        products.addAll(productRepository.findByName(value.toLowerCase()));
-//        products.addAll(productRepository.findByType(value.toLowerCase()));
-//        products.addAll(productRepository.findByCategory(value. toLowerCase()));
-//
-//        if(min!=0 && max!=0)
-//            products.addAll(productRepository.findByMinMaxPrice(min, max));
-//
-//         else if(min!=0)
-//        products.addAll(productRepository.findByMinPrice(min));
-//
-//        else if(max!=0)
-//        products.addAll(productRepository.findByMaxPrice(max));
 
         Set<Products> products=new HashSet<>();
 
-        products.addAll(productRepository.findByName(value.toLowerCase()));
+        if(!value.trim().equals(""))
+        {
+
+            products.addAll(productRepository.findByName(value.toLowerCase()));
         products.addAll(productRepository.findByType(value.toLowerCase()));
-        products.addAll(productRepository.findByCategory(value. toLowerCase()));
+        products.addAll(productRepository.findByCategory(value. toLowerCase()));}
+
+
 
         if(min!=0 && max!=0)
             products.addAll(productRepository.findByMinMaxPrice(min, max));
