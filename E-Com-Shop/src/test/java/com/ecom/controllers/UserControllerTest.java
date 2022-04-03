@@ -61,8 +61,11 @@ class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("j@gmail.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.phone").value("84736495837"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("1234"));
+    }
 
-
+    @Test
+    public void addProduct()
+    {
 
     }
 

@@ -7,8 +7,12 @@ import com.ecom.repository.ProductRepository;
 import com.ecom.repository.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -64,9 +68,15 @@ public class ProductController {
 
 
     @ApiOperation(value = "add the products")
-    @Tag(name="add the products",description = "This api is accessible only by registered authorized user. Registered user is a seller.This api will add products for the user.")
+    @Tag(name="add the products",description = "This api is accessible only by registered user. Registered user has a seller.This api will add products for the user.")
+    @ApiResponses( value={
+            @ApiResponse(responseCode ="201", description = "product is created"),
+            @ApiResponse(responseCode ="400", description = "product not created"),
+            @ApiResponse(responseCode ="401", description = "unauthorized access")
+    }
+    )
     @PostMapping("/seller/add-product")
-    public boolean addProduct(@RequestBody Products products)
+    public ResponseEntity addProduct(@RequestBody Products products)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username=auth.getName();
@@ -82,13 +92,14 @@ public class ProductController {
 
         Products product=productRepository.save(products);
 
-            if(product==null)
-                return false;
-            return true;
+        if(product==null)
+            new ResponseEntity<>(product, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "view products")
-    @Tag(name="view products",description = "This api is accessible only by registered authorized user.This api will give list of all products added by the logged in user")
+    @Tag(name="view products",description = "This api is accessible only by registered user.This api will give list of all products added by the logged in user")
     @GetMapping("/seller/view-products")
     public List<Products> viewProducts()
     {
@@ -101,7 +112,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "update the products")
-    @Tag(name="update the products",description = "This api is accessible only by registered authorized user.Pass updated information of product with the product id .It will update product if that product is added by the logged in user and return true otherwise return false.")
+    @Tag(name="update the products",description = "This api is accessible only by registered user.Pass updated information of product with the product id .It will update product if that product is added by the logged in user and return true otherwise return false.")
     @PutMapping("/seller/update-product")
     public boolean updateProduct(@RequestBody Products newproducts)
     {
@@ -120,6 +131,7 @@ public class ProductController {
           newproducts.setType(newproducts.getType().toLowerCase());
           newproducts.setSpecifications(newproducts.getSpecifications().toLowerCase());
           Products updateproduct = productRepository.save(newproducts);
+
           if (updateproduct == null)
               return false;
       }
@@ -130,7 +142,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "delete the products")
-    @Tag(name="delete the products",description = "This api is accessible only by registered authorized user.Pass the id of the product through parameter.It will delete product if that product is added by the logged in user and return true otherwise return false.")
+    @Tag(name="delete the products",description = "This api is accessible only by registered user.Pass the id of the product through parameter.It will delete product if that product is added by the logged in user and return true otherwise return false.")
     @DeleteMapping("/seller/delete-product")
     public boolean deleteProduct(@RequestParam int id)
     {
