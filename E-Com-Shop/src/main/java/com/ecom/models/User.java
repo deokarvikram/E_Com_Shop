@@ -20,18 +20,15 @@ public class User //implements UserDetails
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "first_name",nullable = false)
-    private String firstName;
-    @Column(name = "middle_name")
-    private String middleName;
-    @Column(name = "last_name",nullable = false)
-    private String lastName;
+    @Column(name = "name",nullable = false)
+    private String name;
 
+    @Column(unique = true,nullable = false)
     private String email;
+
     @Column(unique = true,nullable = false)
     private String phone;
-    @Column(name = "alternative_phone")
-    private String alternativePhone;
+
     @Column(nullable = false)
     private String password;
 
