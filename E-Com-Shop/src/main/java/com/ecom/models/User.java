@@ -33,6 +33,7 @@ public class User //implements UserDetails
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Products> products;
 
     @JsonIgnore

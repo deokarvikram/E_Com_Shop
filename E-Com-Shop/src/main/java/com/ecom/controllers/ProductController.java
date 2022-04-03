@@ -31,8 +31,8 @@ public class ProductController {
 
     @ApiOperation(value = "search the products")
     @Tag(name="search the products",description = "This api is accessible by any user without creating its profile. " +
-            "User can pass name, type, category as value parameter and price as min,max parameter  to search products " +
-            "It will give list of products or empty list if no product found for matching criteria. If no field is set it will return all products")
+            "User can pass name, type, category of product as value parameter and price as min,max parameter  to search products " +
+            "It will give list of products or empty list if no product found for matching criteria. If no parameter is passed it will return all products")
     @ApiResponses( value={
             @ApiResponse(responseCode ="200", description = "products are found"),
             @ApiResponse(responseCode ="404", description = "products are not found")
@@ -94,7 +94,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "update the products")
-    @Tag(name="update the products",description = "This api is accessible only by registered user.Pass updated information of product with the product id .It will update product if that product is added by the logged in user and return true otherwise return false.")
+    @Tag(name="update the products",description = "This api is accessible only by registered user.Pass updated information of product with the product id .It will update product if that product is added by the logged in user.")
     @ApiResponses( value={
             @ApiResponse(responseCode ="202", description = "products updated"),
             @ApiResponse(responseCode ="404", description = "products are not found"),
@@ -121,7 +121,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "delete the products")
-    @Tag(name="delete the products",description = "This api is accessible only by registered user.Pass the id of the product through parameter.It will delete product if that product is added by the logged in user and return true otherwise return false.")
+    @Tag(name="delete the products",description = "This api is accessible only by registered user.Pass the id of the product through parameter.It will delete product if that product is added by the logged in user.")
     @ApiResponses( value={
             @ApiResponse(responseCode ="201", description = "product deleted"),
             @ApiResponse(responseCode ="404", description = "product not found"),

@@ -70,7 +70,7 @@ public class ProductService {
       products.setName(products.getName().toLowerCase());
       products.setType(products.getType().toLowerCase());
       products.setSpecifications(products.getSpecifications().toLowerCase());
-      
+
       return productRepository.save(products);
   }
 
