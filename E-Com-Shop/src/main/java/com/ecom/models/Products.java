@@ -26,9 +26,9 @@ public class Products {
     private String category;
     @Column(nullable = false)
     private float price;
-    @Column(nullable = false)
+  
     private String specifications;
-    @Column(nullable = false)
+
     private String description;
 
     @ManyToOne
