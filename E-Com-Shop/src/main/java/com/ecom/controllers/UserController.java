@@ -34,8 +34,7 @@ public class UserController {
             @ApiResponse(responseCode ="201", description = "user is created"),
             @ApiResponse(responseCode ="400", description = "user not created"),
             @ApiResponse(responseCode ="500", description = "email or phone duplicated. Other error may be occured")
-    }
-    )
+    })
     @PostMapping("/add-user")
     public ResponseEntity<User> addUser(@RequestBody User newuser)
     {
@@ -50,6 +49,8 @@ public class UserController {
 
         if(user==null)
             new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+
+        user.setPassword(null);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 

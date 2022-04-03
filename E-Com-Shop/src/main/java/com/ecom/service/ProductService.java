@@ -5,12 +5,9 @@ import com.ecom.models.User;
 import com.ecom.repository.ProductRepository;
 import com.ecom.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashSet;
 import java.util.List;
@@ -83,5 +80,10 @@ public class ProductService {
         User user= userRepository.findByEmail(username);
 
         return productRepository.findByUser(user.getId());
+    }
+
+    public void deleteProduct(int userId, int productId)
+    {
+        productRepository.deleteByUserAndProduct(userId,productId);
     }
 }

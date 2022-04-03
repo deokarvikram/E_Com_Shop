@@ -135,17 +135,18 @@ public class ProductController {
             @ApiResponse(responseCode ="401", description = "unauthorized access")
     })
     @DeleteMapping("/seller/delete-product")
-    public ResponseEntity deleteProduct(@RequestParam int id)
+    public ResponseEntity deleteProduct(@RequestParam int productId)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username=auth.getName();
 
         User user= userRepository.findByEmail(username);
         //check if the product belongs to the user or not. If not, return not found status from else block
-        Products product= productRepository.findByUserAndProduct(user.getId(),id);
+        Products product= productRepository.findByUserAndProduct(user.getId(),productId);
 
         if(product!=null) {
-             productRepository.deleteByUserAndProduct(user.getId(),id);
+
+            service.deleteProduct(user.getId(),productId);
         }
         else
            return new ResponseEntity<>("Something went wrong while deleting product", HttpStatus.NOT_FOUND);
