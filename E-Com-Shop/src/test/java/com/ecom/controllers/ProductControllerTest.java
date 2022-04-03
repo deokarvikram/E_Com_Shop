@@ -82,7 +82,6 @@ class ProductControllerTest {
     }
 
     @Test
-
     public void searchProduct() throws Exception {
         Products products=new Products();
         products.setId(1);
