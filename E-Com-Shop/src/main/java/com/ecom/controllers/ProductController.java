@@ -1,11 +1,9 @@
 package com.ecom.controllers;
 
-import com.ecom.models.ProductSearch;
 import com.ecom.models.Products;
 import com.ecom.models.User;
 import com.ecom.repository.ProductRepository;
 import com.ecom.repository.UserRepository;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -43,6 +41,13 @@ public class ProductController {
 
         Set<Products> products=new HashSet<>();
 
+        //return all products if paramater is set
+        if(value.trim().equals("") && min==0 && max==0)
+        {
+            products.addAll(productRepository.findAll());
+        }
+
+        //search by name,type and category
         if(!value.trim().equals(""))
         {
 
@@ -51,7 +56,7 @@ public class ProductController {
         products.addAll(productRepository.findByCategory(value. toLowerCase()));}
 
 
-
+        //search by price
         if(min!=0 && max!=0)
             products.addAll(productRepository.findByMinMaxPrice(min, max));
 
@@ -60,6 +65,8 @@ public class ProductController {
 
         else if(max!=0)
             products.addAll(productRepository.findByMaxPrice(max));
+        //search by price
+
 
         if(products.isEmpty())
             return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
@@ -140,6 +147,7 @@ public class ProductController {
 
         User user= userRepository.findByEmail(username);
 
+        //check if the product belongs to the user or not. If not, return not found status from else block
       Products products= productRepository.findByUserAndProduct(user.getId(),newproducts.getId());
 
       if(products!=null) {
@@ -173,7 +181,7 @@ public class ProductController {
         String username=auth.getName();
 
         User user= userRepository.findByEmail(username);
-
+        //check if the product belongs to the user or not. If not, return not found status from else block
         Products product= productRepository.findByUserAndProduct(user.getId(),id);
 
         if(product!=null) {
