@@ -19,8 +19,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -74,5 +79,31 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(24000));
     }
 
+    @Test
+
+    public void searchProduct() throws Exception {
+        Products products=new Products();
+        products.setId(1);
+        products.setName("Dell dis");
+        products.setSpecifications("ram 4gb");
+        products.setType("Laptop");
+        products.setDescription("good");
+        products.setCategory("Electronics");
+        products.setPrice(24000);
+
+        Set<Products> set=new HashSet<>();
+        set.add(products);
+
+        when(service.getProducts(anyString(),anyInt(),anyInt())).thenReturn(set);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/search?min=10000"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Dell dis"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].specifications").value("ram 4gb"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].type").value("Laptop"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value("good"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].category").value("Electronics"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(24000));
+    }
 
 }
