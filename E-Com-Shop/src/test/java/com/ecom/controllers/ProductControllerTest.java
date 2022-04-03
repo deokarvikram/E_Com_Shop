@@ -5,6 +5,7 @@ import com.ecom.models.Products;
 import com.ecom.models.User;
 import com.ecom.repository.ProductRepository;
 import com.ecom.repository.UserRepository;
+import com.ecom.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -27,46 +28,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProductControllerTest {
 
 
-//    @Autowired
-//    UserController controller;
-//
-//    @Autowired
-//    MockMvc mockMvc;
-//
-//    @MockBean
-//    ProductRepository productRepository;
-//
-//    @MockBean
-//    UserRepository userRepository;
-//
-//    @MockBean
-//    UserService userService;
-//
-//    @Test
-//    @WithMockUser(username = "j@gmail.com",authorities = {"SELLER"},password = "1234")
-//    public void addProduct() throws Exception {
-//        Products products=new Products();
-//        products.setId(1);
-//        products.setName("Dell dis");
-//        products.setSpecifications("ram 4gb");
-//        products.setType("Laptop");
-//        products.setDescription("good");
-//        products.setCategory("Electronics");
-//        products.setPrice(24000);
-//       // products.setUser(1);
-//
-//        when(productRepository.save(any(Products.class))).thenReturn(products);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/seller/add-product")
-//                        .content(new ObjectMapper().writeValueAsString(products))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isCreated())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Dell dis"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.specifications").value("ram 4gb"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("Laptop"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("good"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("Electronics"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(240000));
-//    }
+    @Autowired
+    ProductController productController;
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    ProductRepository productRepository;
+
+    @MockBean
+    UserRepository userRepository;
+
+    @MockBean
+    ProductService service;
+
+    @MockBean
+    UserService userService;
+
+    @Test
+    @WithMockUser(username = "j@gmail.com",authorities = {"SELLER"},password = "1234")
+    public void addProduct() throws Exception {
+        Products products=new Products();
+        products.setId(1);
+        products.setName("Dell dis");
+        products.setSpecifications("ram 4gb");
+        products.setType("Laptop");
+        products.setDescription("good");
+        products.setCategory("Electronics");
+        products.setPrice(24000);
+       // products.setUser(1);
+
+        when(service.addProduct(any(Products.class))).thenReturn(products);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/seller/add-product")
+                        .content(new ObjectMapper().writeValueAsString(products))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Dell dis"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.specifications").value("ram 4gb"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("Laptop"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("good"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("Electronics"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(24000));
+    }
 }
