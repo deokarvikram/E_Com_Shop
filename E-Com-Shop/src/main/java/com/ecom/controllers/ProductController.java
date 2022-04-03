@@ -47,7 +47,7 @@ public class ProductController {
         products = service.getProducts(value, min, max);
 
         if(products.isEmpty())
-            return new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("no product found", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(products, HttpStatus.OK);
 
@@ -115,7 +115,7 @@ public class ProductController {
           Products updateproduct = service.addProduct(newproducts);
       }
       else
-        return  new ResponseEntity<>(products, HttpStatus.NOT_FOUND);
+        return  new ResponseEntity<>("Something went wrong while updating product", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(newproducts, HttpStatus.ACCEPTED);
     }
@@ -142,9 +142,9 @@ public class ProductController {
              productRepository.deleteByUserAndProduct(user.getId(),id);
         }
         else
-           return new ResponseEntity<>(product, HttpStatus.NOT_FOUND);
+           return new ResponseEntity<>("Something went wrong while deleting product", HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<>(product, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("product is deleted", HttpStatus.ACCEPTED);
     }
 
 }
