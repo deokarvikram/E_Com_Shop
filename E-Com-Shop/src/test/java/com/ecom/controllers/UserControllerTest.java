@@ -63,10 +63,5 @@ class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password").isEmpty());
     }
 
-    @Test
-    public void addProduct()
-    {
-
-    }
 
 }
