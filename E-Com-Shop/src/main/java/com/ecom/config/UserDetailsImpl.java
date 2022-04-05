@@ -25,7 +25,7 @@ public class UserDetailsImpl implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         List<GrantedAuthority> authorities=new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority( this.user.getAuthority()));
+        authorities.add(new SimpleGrantedAuthority( this.user.getAuthority().name()));
 
         return authorities;
     }

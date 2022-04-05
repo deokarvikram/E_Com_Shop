@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,7 @@ public class User
     private String name;
 
     @Column(unique = true,nullable = false)
+    @Valid()
     private String email;
 
     @Column(unique = true,nullable = false)
@@ -36,6 +38,10 @@ public class User
     @JsonIgnore
     private List<Products> products;
 
-    @JsonIgnore
-    private String authority;
+//    @JsonIgnore
+//    private String authority;
+
+    @Enumerated(value = EnumType.STRING)
+    private Authority authority;
+
 }

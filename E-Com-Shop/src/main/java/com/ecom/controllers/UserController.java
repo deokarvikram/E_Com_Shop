@@ -1,5 +1,6 @@
 package com.ecom.controllers;
 
+import com.ecom.models.Authority;
 import com.ecom.models.User;
 import com.ecom.repository.UserRepository;
 import io.swagger.annotations.Api;
@@ -26,6 +27,7 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
 
+
     @ApiOperation(value = "add user")
     @Tag(name="add user",description = "No credentials are required to access this api.Users must be created their profile through this api to create,update and delete their " +
             "own products. Added user will have seller authority. Once user is added user can add,update and delete its products. Make sure users are logged in with user credentials while creating, updating and deleting their product " +
@@ -42,7 +44,9 @@ public class UserController {
 
         newuser.setPassword(passwordEncoder.encode(pass));
 
-        newuser.setAuthority("SELLER");
+        newuser.setAuthority(Authority.SELLER);
+
+        //Authority authority;
 
         User user=userRepository.save(newuser);
 

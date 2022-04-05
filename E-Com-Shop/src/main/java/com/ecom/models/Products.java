@@ -26,7 +26,7 @@ public class Products {
     private String category;
     @Column(nullable = false)
     private float price;
-  
+
     private String specifications;
 
     private String description;

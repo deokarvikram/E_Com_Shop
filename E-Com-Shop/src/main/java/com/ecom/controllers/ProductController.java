@@ -1,5 +1,6 @@
 package com.ecom.controllers;
 
+import com.ecom.models.Authority;
 import com.ecom.models.Products;
 import com.ecom.models.User;
 import com.ecom.repository.ProductRepository;
@@ -32,6 +33,7 @@ public class ProductController {
 
 
 
+
     @ApiOperation(value = "search the products")
     @Tag(name="search the products",description = "This api is accessible by any user without creating its profile. " +
             "User can pass name, type, category of product as value parameter and price as min,max parameter  to search products " +
@@ -44,9 +46,9 @@ public class ProductController {
     public ResponseEntity getProducts(@RequestParam(required = false,defaultValue ="") String value,@RequestParam(required = false,defaultValue ="0") int min,@RequestParam(required = false,defaultValue ="0") int max)
     {
 
-        Set<Products> products=new HashSet<>();
 
-        products = service.getProducts(value, min, max);
+
+        Set<Products> products = service.getProducts(value, min, max);
 
         if(products.isEmpty())
             return new ResponseEntity<>("no product found", HttpStatus.NOT_FOUND);
